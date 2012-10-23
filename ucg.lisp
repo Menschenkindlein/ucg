@@ -3,14 +3,6 @@
 
 (in-package #:ucg)
 
-(defgeneric add-structure (grammar
-			   structure-name
-			   printing-lambda)
-  (:documentation "Defines how the rules for printing are added."))
-
-(defgeneric print-in (grammar structure)
-  (:documentation "Defines how to apply printing functions to structure."))
-
 (defmacro make-printer (name &key terminal default escape-symbol)
   (let ((built-in-funcs (gensym)))
     `(let ((,built-in-funcs (make-hash-table)))
