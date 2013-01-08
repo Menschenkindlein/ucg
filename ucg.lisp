@@ -4,7 +4,7 @@
 
 (in-package #:ucg)
 
-(defmacro make-printer (name &key terminal default)
+(defmacro make-eval (name &key terminal default)
   (let ((funcs-and-macros (gensym)))
     `(let ((,funcs-and-macros (make-hash-table)))
        (defun ,(intern (format nil "~a-DEFUN" name))
@@ -30,19 +30,19 @@
 		   (apply ,default structure))
 	       (funcall ,terminal structure)))))))
 
-;; Example printer
+;; Example eval
 
-;; here we define grammar and basic printing functions
+;; here we define eval and basic macros
 
-(make-printer html-grammar
-	      :terminal (lambda (terminal) (princ-to-string terminal))
-	      :default (lambda (&rest unknown)
-			 (apply #'concatenate
-				'string
-				(mapcar #'html-grammar
-					unknown))))
+(make-eval html-grammar
+	   :terminal (lambda (terminal) (princ-to-string terminal))
+	   :default (lambda (&rest unknown)
+		      (apply #'concatenate
+			     'string
+			     (mapcar #'html-grammar
+				     unknown))))
 
-;; and here we add one specific function, using `add-<name>-structure'
+;; and here we add some specific functions, using `add-<name>-structure'
 
 (dolist (func-name (list :a :b :c))
   (html-grammar-defun func-name
@@ -57,7 +57,7 @@
 		       (lambda (&rest args)
 			 args))
 
-;; and here we print some s-exp using `<name>' function
+;; and here we eval some s-exp using `<name>' function
 
 (html-grammar `(:a (:b (:c "some text " (list :a ,(* 123 321))))))
 
